@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throwback Translator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Selection Screen */
+        #selectionScreen {
+            text-align: center;
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+        .device-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+            width: 150px;
+        }
+        .device-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* App Container */
+        #translatorApp {
+            display: none;
+            background-color: #1e1e1e;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        /* Layouts */
+        body.mode-pc #translatorApp { width: 800px; border-radius: 12px; display: flex; flex-direction: column; }
+        body.mode-phone #translatorApp { width: 100%; height: 100vh; border-radius: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px; box-sizing: border-box; }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            background-color: #2c2c2c;
+            color: #fff;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        h1 { text-align: center; color: #4CAF50; margin-top: 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #81C784; }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .switch-btn { background-color: #333; color: #4CAF50; border: 1px solid #4CAF50; }
+        .switch-btn:hover { background-color: #444; }
+        .copy-btn { background-color: #4CAF50; color: white; }
+        .copy-btn:hover { background-color: #45a049; }
+
+        .status { color: #81C784; font-size: 14px; opacity: 0; text-align: center; margin-top: 5px; transition: opacity 0.3s; }
+    </style>
+</head>
+<body>
+
+<div id="selectionScreen">
+    <h1 style="color: white; margin-bottom: 30px;">Select Your Device</h1>
+    <button class="device-btn" onclick="startApp('phone')">📱 Phone</button>
+    <button class="device-btn" onclick="startApp('pc')">💻 PC</button>
+</div>
+
+<div id="translatorApp">
+    <h1 id="appTitle">English ➔ Thingy</h1>
+    
+    <label id="inputLabel">English Input:</label>
+    <textarea id="inputText" placeholder="Type here..." oninput="processText()"></textarea>
+
+    <div class="controls">
+        <button class="btn switch-btn" onclick="toggleMode()">🔄 Switch Direction</button>
+        <button class="btn copy-btn" onclick="copyResult()">Copy Result</button>
+    </div>
+
+    <label id="outputLabel">Thingy Output:</label>
+    <textarea id="outputText" placeholder="Result will appear here..." readonly></textarea>
+    <div class="status" id="copyStatus">Copied to clipboard!</div>
+</div>
+
+<script>
+    let isEnglishToThingy = true;
+
+    const cipher = {
+        'a': 'zep', 'b': 'zorp', 'c': 'zeep', 'd': 'zorpg', 'e': 'zang',
+        'f': 'zeepy', 'g': 'zkeep', 'h': 'hoip', 'i': 'zepy', 'j': 'kepy',
+        'k': 'korp', 'l': 'zorg', 'm': 'morkg', 'n': 'mork', 'o': 'oopz',
+        'p': 'pork', 'q': 'lorp', 'r': 'lulz', 's': 'szeep', 't': 'kalz',
+        'u': 'zeeps', 'v': 'zleep', 'w': 'xeek', 'x': 'kex', 'y': 'zog', 'z': 'wat'
+    };
+
+    // Create a reverse cipher for decoding
+    const reverseCipher = Object.fromEntries(Object.entries(cipher).map(([k, v]) => [v, k]));
+    // Sort keys by length descending to ensure longest matches are caught first (e.g., 'zeeps' before 'zep')
+    const sortedCipherKeys = Object.keys(reverseCipher).sort((a, b) => b.length - a.length);
+
+    function startApp(deviceType) {
+        document.getElementById('selectionScreen').style.display = 'none';
+        document.body.classList.add(deviceType === 'phone' ? 'mode-phone' : 'mode-pc');
+        document.getElementById('translatorApp').style.display = 'flex';
+    }
+
+    function toggleMode() {
+        isEnglishToThingy = !isEnglishToThingy;
+        document.getElementById('appTitle').innerText = isEnglishToThingy ? "English ➔ Thingy" : "Thingy ➔ English";
+        document.getElementById('inputLabel').innerText = isEnglishToThingy ? "English Input:" : "Thingy Input:";
+        document.getElementById('outputLabel').innerText = isEnglishToThingy ? "Thingy Output:" : "English Output:";
+        
+        // Swap content of boxes
+        const inputVal = document.getElementById('inputText').value;
+        const outputVal = document.getElementById('outputText').value;
+        document.getElementById('inputText').value = outputVal;
+        processText();
+    }
+
+    function processText() {
+        const input = document.getElementById('inputText').value;
+        if (isEnglishToThingy) {
+            translateToThingy(input);
+        } else {
+            translateToEnglish(input);
+        }
+    }
+
+    function translateToThingy(text) {
+        let output = '';
+        for (let char of text) {
+            let lowerChar = char.toLowerCase();
+            if (cipher[lowerChar]) {
+                let chunk = cipher[lowerChar];
+                output += (char === char.toUpperCase()) ? chunk.charAt(0).toUpperCase() + chunk.slice(1) : chunk;
+            } else {
+                output += char;
+            }
+        }
+        document.getElementById('outputText').value = output;
+    }
+
+    function translateToEnglish(text) {
+        let output = '';
+        let i = 0;
+        while (i < text.length) {
+            let found = false;
+            // Peek ahead to see if the next string matches a cipher word
+            for (let code of sortedCipherKeys) {
+                if (text.toLowerCase().substring(i, i + code.length) === code) {
+                    let letter = reverseCipher[code];
+                    // Check original casing of the first letter of the chunk
+                    output += (text[i] === text[i].toUpperCase()) ? letter.toUpperCase() : letter;
+                    i += code.length;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                output += text[i];
+                i++;
+            }
+        }
+        document.getElementById('outputText').value = output;
+    }
+
+    function copyResult() {
+        const copyText = document.getElementById("outputText");
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        const status = document.getElementById("copyStatus");
+        status.style.opacity = 1;
+        setTimeout(() => { status.style.opacity = 0; }, 2000);
+    }
+</script>
+
+</body>
+</html>

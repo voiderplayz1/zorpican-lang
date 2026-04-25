@@ -4,175 +4,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thingy — Secret Language Translator</title>
+  <title>Zorpican Translator</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 ```
 :root {
-  --bg-top: #ffffff;
-  --bg-bot: #e4d9f5;
-  --primary: #7c6b9e;
-  --primary-dark: #5a4c7a;
-  --primary-light: #a899c8;
-  --accent: #c9bce4;
-  --text: #3d3550;
-  --text-muted: #9585b8;
-  --surface: rgba(255, 255, 255, 0.72);
-  --surface-bright: rgba(255, 255, 255, 0.92);
-  --border: rgba(190, 170, 230, 0.38);
-  --shadow: 0 8px 40px rgba(100, 80, 160, 0.13);
-  --shadow-sm: 0 3px 14px rgba(100, 80, 160, 0.09);
-  --radius: 22px;
-  --radius-sm: 14px;
+  --primary:       #6b5a99;
+  --primary-dark:  #4e3f74;
+  --primary-light: #9d8ec4;
+  --accent:        #c2b2e0;
+  --text:          #36284d;
+  --text-muted:    #8a78ae;
+  --surface:       rgba(255, 255, 255, 0.78);
+  --surface-hi:    rgba(255, 255, 255, 0.95);
+  --border:        rgba(185, 165, 225, 0.42);
+  --shadow:        0 10px 44px rgba(90, 70, 150, 0.15);
+  --shadow-sm:     0 3px 16px rgba(90, 70, 150, 0.1);
+  --radius:        20px;
+  --green:         #68b896;
 }
 
-html { height: 100%; }
+html, body { height: 100%; }
 
 body {
   font-family: 'Nunito', sans-serif;
   color: var(--text);
-  min-height: 100%;
-  background: linear-gradient(160deg, var(--bg-top) 0%, #f0e8fb 50%, var(--bg-bot) 100%);
+  /* Strong, visible gradient — white top → lavender bottom */
+  background: linear-gradient(175deg,
+    #ffffff 0%,
+    #f2ecfd 30%,
+    #e2d5f8 65%,
+    #d0bff2 100%
+  );
   background-attachment: fixed;
+  min-height: 100%;
   overflow-x: hidden;
 }
 
-/* Ambient orbs */
-body::before, body::after {
+/* Ambient blobs */
+body::before {
   content: '';
-  position: fixed;
-  border-radius: 50%;
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 90% 10%, rgba(188,162,238,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 10% 90%, rgba(206,188,248,0.22) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
-body::before {
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(196, 170, 240, 0.22) 0%, transparent 65%);
-  top: -250px; right: -200px;
-}
-body::after {
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(210, 190, 248, 0.18) 0%, transparent 65%);
-  bottom: -150px; left: -150px;
-}
 
-/* ==================== SCREENS ==================== */
+/* ===================== SCREENS ===================== */
 .screen { display: none; position: relative; z-index: 1; }
-.screen.active { display: flex; animation: screenIn 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
-
-@keyframes screenIn {
-  from { opacity: 0; transform: translateY(22px); }
+.screen.active {
+  display: flex;
+  animation: fadeUp .5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ==================== DEVICE SELECT ==================== */
+/* ===================== DEVICE SELECT ===================== */
 #screen-device {
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
 }
 
-.brand {
-  margin-bottom: 3.5rem;
-}
+.brand { margin-bottom: 3.5rem; }
+
 .brand-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(4rem, 12vw, 7rem);
+  font-size: clamp(3.8rem, 13vw, 7rem);
   font-weight: 300;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  color: var(--primary-dark);
+  line-height: .95;
+  letter-spacing: -.03em;
 }
 .brand-title em {
   font-style: italic;
-  background: linear-gradient(120deg, var(--primary-dark), var(--primary), #b09ad8);
+  background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary) 50%, #b09ad8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .brand-sub {
-  margin-top: 0.6rem;
-  font-size: 0.82rem;
-  letter-spacing: 0.2em;
+  margin-top: .65rem;
+  font-size: .78rem;
+  letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--text-muted);
-  font-weight: 400;
 }
 
 .device-prompt {
   font-size: 1rem;
   color: var(--text-muted);
-  font-weight: 400;
+  font-weight: 500;
   margin-bottom: 1.75rem;
-  letter-spacing: 0.04em;
 }
 
 .device-cards {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.4rem;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .device-card {
   background: var(--surface);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(22px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2.5rem 3rem;
+  padding: 2.4rem 3rem;
   cursor: pointer;
   text-align: center;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s ease,
-              background 0.2s ease;
   box-shadow: var(--shadow);
-  min-width: 190px;
+  min-width: 185px;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
 }
 .device-card:hover {
   transform: translateY(-8px) scale(1.03);
-  background: var(--surface-bright);
-  box-shadow: 0 20px 60px rgba(100, 80, 160, 0.2);
+  box-shadow: 0 22px 60px rgba(90,70,160,.22);
 }
-.device-card .icon {
-  font-size: 2.75rem;
-  margin-bottom: 0.8rem;
-  display: block;
-}
+.device-card .icon { font-size: 2.6rem; display: block; margin-bottom: .75rem; }
 .device-card .label {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.75rem;
+  font-size: 1.7rem;
   font-weight: 400;
   color: var(--primary-dark);
 }
 .device-card .hint {
-  font-size: 0.75rem;
+  font-size: .73rem;
   color: var(--text-muted);
   font-weight: 300;
-  margin-top: 0.3rem;
+  margin-top: .25rem;
 }
 
-/* ==================== MAIN APP ==================== */
+/* ===================== APP SCREEN ===================== */
 #screen-app { flex-direction: column; }
 
-/* PC layout */
+/* PC */
 body.mode-pc #screen-app {
   align-items: center;
   min-height: 100vh;
-  padding: 2.5rem 1.5rem 3rem;
+  padding: 2rem 1.5rem 3rem;
 }
 body.mode-pc .app-container {
   width: 100%;
   max-width: 860px;
 }
 
-/* Phone layout */
+/* Phone */
 body.mode-phone #screen-app {
-  height: 100vh;
+  height: 100dvh;
   padding: 0;
   overflow: hidden;
 }
@@ -181,44 +168,46 @@ body.mode-phone .app-container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1.1rem 1.1rem 1.4rem;
+  padding: 1rem 1rem 1.25rem;
 }
 
-/* ==================== BACK BUTTON ==================== */
+/* ===================== HEADER ROW ===================== */
+/* Header contains back + title inline — no fixed positioning */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1.1rem;
+}
+body.mode-phone .app-header { margin-bottom: .7rem; }
+
 .back-btn {
-  position: fixed;
-  top: 0.9rem;
-  left: 0.9rem;
-  z-index: 200;
+  flex-shrink: 0;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.78rem;
+  font-size: .78rem;
   font-weight: 700;
   color: var(--text-muted);
   background: var(--surface);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 100px;
-  padding: 0.35rem 0.9rem;
+  padding: .38rem .9rem;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
-  letter-spacing: 0.02em;
+  transition: color .2s, background .2s;
+  white-space: nowrap;
 }
-.back-btn:hover { color: var(--primary); background: var(--surface-bright); }
+.back-btn:hover { color: var(--primary); background: var(--surface-hi); }
 
-/* ==================== HEADER ==================== */
-.app-header {
+.header-center {
+  flex: 1;
   text-align: center;
-  margin-bottom: 1.5rem;
 }
-body.mode-phone .app-header { margin-bottom: 0.8rem; }
-
 .app-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.8rem, 5.5vw, 2.9rem);
   font-weight: 300;
-  letter-spacing: -0.02em;
+  letter-spacing: -.025em;
   line-height: 1;
-  color: var(--primary-dark);
 }
 .app-title em {
   font-style: italic;
@@ -228,39 +217,44 @@ body.mode-phone .app-header { margin-bottom: 0.8rem; }
   background-clip: text;
 }
 .app-tagline {
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-size: .65rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--text-muted);
-  font-weight: 400;
-  margin-top: 0.25rem;
+  margin-top: .15rem;
 }
 
-/* ==================== CONTROLS ==================== */
+/* Spacer so title stays visually centered */
+.header-spacer {
+  flex-shrink: 0;
+  width: 56px; /* approx same as back-btn */
+}
+
+/* ===================== CONTROLS BAR ===================== */
 .controls-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  margin-bottom: 0.9rem;
+  gap: .65rem;
+  margin-bottom: .8rem;
   flex-wrap: wrap;
 }
-body.mode-phone .controls-bar { margin-bottom: 0.6rem; }
+body.mode-phone .controls-bar { margin-bottom: .55rem; }
 
 .btn {
   font-family: 'Nunito', sans-serif;
-  font-size: 0.85rem;
+  font-size: .84rem;
   font-weight: 700;
-  padding: 0.5rem 1.3rem;
+  padding: .5rem 1.25rem;
   border-radius: 100px;
   border: 1.5px solid var(--accent);
   cursor: pointer;
-  transition: all 0.22s ease;
-  letter-spacing: 0.03em;
+  transition: all .22s ease;
+  letter-spacing: .03em;
   white-space: nowrap;
-  line-height: 1.2;
+  line-height: 1.25;
 }
-body.mode-phone .btn { font-size: 0.95rem; padding: 0.6rem 1.45rem; }
+body.mode-phone .btn { font-size: .95rem; padding: .58rem 1.4rem; }
 
 .btn-primary {
   background: var(--primary);
@@ -271,34 +265,36 @@ body.mode-phone .btn { font-size: 0.95rem; padding: 0.6rem 1.45rem; }
   background: var(--primary-dark);
   border-color: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 5px 18px rgba(100,80,160,0.28);
+  box-shadow: 0 5px 18px rgba(90,70,160,.28);
 }
 
+/* Syllable toggle pill */
 .toggle-wrap {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
+  gap: .5rem;
+  font-size: .84rem;
   color: var(--text-muted);
   font-weight: 600;
   cursor: pointer;
   user-select: none;
-  padding: 0.42rem 1rem 0.42rem 0.75rem;
+  padding: .42rem 1rem .42rem .8rem;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   background: var(--surface);
   backdrop-filter: blur(10px);
-  transition: background 0.2s;
+  transition: background .2s;
 }
-body.mode-phone .toggle-wrap { font-size: 0.9rem; padding: 0.55rem 1.1rem 0.55rem 0.85rem; }
-.toggle-wrap:hover { background: var(--surface-bright); }
+body.mode-phone .toggle-wrap { font-size: .9rem; padding: .5rem 1.1rem .5rem .85rem; }
+.toggle-wrap:hover { background: var(--surface-hi); }
+.toggle-wrap.hidden { display: none !important; }
 
 .toggle-switch {
   position: relative;
   width: 40px; height: 22px;
   background: var(--accent);
   border-radius: 100px;
-  transition: background 0.25s;
+  transition: background .25s;
   flex-shrink: 0;
 }
 body.mode-phone .toggle-switch { width: 46px; height: 26px; }
@@ -310,72 +306,67 @@ body.mode-phone .toggle-switch { width: 46px; height: 26px; }
   border-radius: 50%;
   background: white;
   top: 3px; left: 3px;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
 }
 body.mode-phone .toggle-switch::after { width: 20px; height: 20px; }
 .toggle-switch.on::after { transform: translateX(18px); }
 body.mode-phone .toggle-switch.on::after { transform: translateX(20px); }
 
-/* Mode direction banner */
+/* Direction banner */
 .direction-banner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
+  gap: .55rem;
+  margin-bottom: .9rem;
+  font-size: .82rem;
+  font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: .05em;
 }
-body.mode-phone .direction-banner { margin-bottom: 0.6rem; font-size: 0.85rem; }
+body.mode-phone .direction-banner { margin-bottom: .6rem; font-size: .85rem; }
 .direction-banner .lang { color: var(--text); }
-.direction-banner .arrow {
-  color: var(--primary-light);
-  font-size: 1.1rem;
-}
+.direction-banner .arrow { color: var(--primary-light); font-size: 1.1rem; }
 
-/* ==================== TRANSLATOR GRID ==================== */
+/* ===================== TRANSLATOR PANELS ===================== */
 .translator {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 body.mode-pc .translator { grid-template-columns: 1fr 1fr; }
 body.mode-phone .translator {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: .7rem;
   flex: 1;
   min-height: 0;
   overflow: hidden;
 }
 
-/* ==================== PANELS ==================== */
 .panel {
   background: var(--surface);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(26px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.2rem 1.35rem 1rem;
+  padding: 1.1rem 1.25rem .9rem;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.25s, border-color 0.25s;
+  transition: box-shadow .25s, border-color .25s;
   position: relative;
   overflow: hidden;
 }
-/* subtle inner shimmer at top */
+/* inner top shimmer */
 .panel::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent);
 }
 .panel:focus-within {
-  box-shadow: var(--shadow), 0 0 0 2px rgba(180,160,230,0.5);
-  border-color: rgba(190,170,230,0.6);
+  box-shadow: var(--shadow), 0 0 0 2px rgba(170,150,220,.55);
+  border-color: rgba(185,165,225,.7);
 }
 body.mode-phone .panel { flex: 1; min-height: 0; }
 
@@ -383,17 +374,17 @@ body.mode-phone .panel { flex: 1; min-height: 0; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.65rem;
+  margin-bottom: .6rem;
 }
 .panel-label {
-  font-size: 0.67rem;
+  font-size: .65rem;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--primary-light);
 }
 .char-count {
-  font-size: 0.68rem;
+  font-size: .67rem;
   color: var(--text-muted);
   font-weight: 300;
 }
@@ -410,58 +401,53 @@ textarea {
   resize: none;
   line-height: 1.7;
   flex: 1;
-  min-height: 150px;
+  min-height: 140px;
 }
 body.mode-phone textarea { font-size: 1.05rem; min-height: unset; height: 100%; }
-textarea::placeholder { color: rgba(160, 140, 200, 0.45); }
+textarea::placeholder { color: rgba(155,135,195,.45); }
 
 .output-area {
   flex: 1;
+  font-family: 'Nunito', sans-serif;
   font-size: 1rem;
+  font-weight: 400;
   line-height: 1.7;
   color: var(--text);
   word-break: break-all;
   overflow-y: auto;
-  min-height: 150px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 400;
+  min-height: 140px;
 }
 body.mode-phone .output-area { font-size: 1.05rem; min-height: unset; }
 .output-area.empty {
-  color: rgba(160, 140, 200, 0.45);
+  color: rgba(155,135,195,.45);
   font-style: italic;
   font-weight: 300;
+  word-break: normal;
 }
 
 .panel-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 0.7rem;
-  padding-top: 0.7rem;
+  margin-top: .65rem;
+  padding-top: .65rem;
   border-top: 1px solid var(--border);
-}
-
-.output-charcount {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  font-weight: 300;
 }
 
 .copy-btn {
   font-family: 'Nunito', sans-serif;
-  font-size: 0.78rem;
+  font-size: .78rem;
   font-weight: 700;
-  padding: 0.38rem 1.05rem;
+  padding: .38rem 1.05rem;
   border-radius: 100px;
   border: 1.5px solid var(--accent);
   background: transparent;
   color: var(--primary);
   cursor: pointer;
-  transition: all 0.22s ease;
-  letter-spacing: 0.04em;
+  transition: all .22s ease;
+  letter-spacing: .04em;
 }
-body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
+body.mode-phone .copy-btn { font-size: .9rem; padding: .5rem 1.2rem; }
 .copy-btn:hover {
   background: var(--primary);
   color: white;
@@ -469,17 +455,12 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
   transform: translateY(-1px);
 }
 .copy-btn.copied {
-  background: #72bf9a;
+  background: var(--green);
   color: white;
-  border-color: #72bf9a;
-  transform: scale(1.04);
+  border-color: var(--green);
 }
 
-/* syllable toggle hidden in English mode */
-.toggle-wrap.hidden { display: none; }
-
-/* scrollbar style */
-::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 ```
@@ -488,11 +469,11 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
 </head>
 <body class="mode-pc">
 
-  <!-- ============================= SCREEN: DEVICE SELECT ============================= -->
+  <!-- =================== DEVICE SELECT =================== -->
 
   <div id="screen-device" class="screen active">
     <div class="brand">
-      <div class="brand-title"><em>Thingy</em></div>
+      <div class="brand-title"><em>Zorpican</em></div>
       <div class="brand-sub">a secret language translator</div>
     </div>
     <p class="device-prompt">How are you viewing this?</p>
@@ -510,18 +491,23 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
     </div>
   </div>
 
-  <!-- ============================= SCREEN: APP ============================= -->
+  <!-- =================== APP =================== -->
 
   <div id="screen-app" class="screen">
-    <button class="back-btn" onclick="goBack()">← Back</button>
     <div class="app-container">
 
 ```
+  <!-- Header: back | title | spacer (keeps title centered) -->
   <div class="app-header">
-    <div class="app-title"><em>Thingy</em></div>
-    <div class="app-tagline">Secret Language Translator</div>
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <div class="header-center">
+      <div class="app-title"><em>Zorpican</em></div>
+      <div class="app-tagline">Secret Language Translator</div>
+    </div>
+    <div class="header-spacer"></div>
   </div>
 
+  <!-- Controls -->
   <div class="controls-bar">
     <button class="btn btn-primary" onclick="switchDirection()">⇄ Switch Direction</button>
     <label class="toggle-wrap" id="syllable-wrap" onclick="toggleSyllables()">
@@ -530,15 +516,16 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
     </label>
   </div>
 
+  <!-- Direction banner -->
   <div class="direction-banner">
     <span class="lang" id="from-label">English</span>
     <span class="arrow">→</span>
-    <span class="lang" id="to-label">Thingy</span>
+    <span class="lang" id="to-label">Zorpican</span>
   </div>
 
+  <!-- Panels -->
   <div class="translator">
 
-    <!-- Input Panel -->
     <div class="panel">
       <div class="panel-top">
         <span class="panel-label" id="input-panel-label">English</span>
@@ -552,28 +539,27 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
       ></textarea>
     </div>
 
-    <!-- Output Panel -->
     <div class="panel">
       <div class="panel-top">
-        <span class="panel-label" id="output-panel-label">Thingy</span>
+        <span class="panel-label" id="output-panel-label">Zorpican</span>
       </div>
       <div class="output-area empty" id="output-area">Translation will appear here…</div>
       <div class="panel-footer">
-        <span class="output-charcount" id="output-char-count"></span>
+        <span class="char-count" id="output-char-count"></span>
         <button class="copy-btn" id="copy-btn" onclick="copyOutput()">Copy</button>
       </div>
     </div>
 
-  </div><!-- /translator -->
-</div><!-- /app-container -->
+  </div>
+</div>
 ```
 
-  </div><!-- /screen-app -->
+  </div>
 
 <script>
-  /* ========================================================
+  /* ============================================================
      DICTIONARY
-  ======================================================== */
+  ============================================================ */
   const DICT = {
     a:'zep',  b:'zorp', c:'zeep',  d:'zorpg', e:'zang',  f:'zeepy',
     g:'zkeep',h:'hoip', i:'zepy',  j:'kepy',  k:'korp',  l:'zorg',
@@ -582,20 +568,20 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
     y:'zog',  z:'wat'
   };
 
-  // Reverse lookup sorted longest-sound-first for greedy decoding
+  // Sorted longest-sound-first for greedy decode
   const REVERSE = Object.entries(DICT)
     .map(([letter, sound]) => ({ letter, sound }))
     .sort((a, b) => b.sound.length - a.sound.length);
 
-  /* ========================================================
+  /* ============================================================
      STATE
-  ======================================================== */
-  let direction    = 'toThingy';   // 'toThingy' | 'toEnglish'
+  ============================================================ */
+  let direction    = 'toZorpican'; // 'toZorpican' | 'toEnglish'
   let syllableMode = false;
 
-  /* ========================================================
-     DEVICE SELECTION
-  ======================================================== */
+  /* ============================================================
+     DEVICE / SCREEN
+  ============================================================ */
   function selectDevice(d) {
     document.body.classList.toggle('mode-phone', d === 'phone');
     document.body.classList.toggle('mode-pc',    d === 'pc');
@@ -613,64 +599,58 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
     showScreen('screen-device');
   }
 
-  /* ========================================================
-     TRANSLATION CORE
-  ======================================================== */
-  function toThingy(text) {
-    let result      = '';
-    let soundBuffer = [];
-
+  /* ============================================================
+     TRANSLATION
+  ============================================================ */
+  function toZorpican(text) {
+    let result = '', buf = [];
     for (const ch of text) {
-      const lower = ch.toLowerCase();
-      if (DICT[lower] !== undefined) {
-        const sound   = DICT[lower];
-        const isUpper = /[A-Z]/.test(ch);
-        soundBuffer.push(isUpper ? sound[0].toUpperCase() + sound.slice(1) : sound);
+      const lo = ch.toLowerCase();
+      if (DICT[lo] !== undefined) {
+        const sound = DICT[lo];
+        const up    = /[A-Z]/.test(ch);
+        buf.push(up ? sound[0].toUpperCase() + sound.slice(1) : sound);
       } else {
-        if (soundBuffer.length) {
-          result += syllableMode ? soundBuffer.join('|') : soundBuffer.join('');
-          soundBuffer = [];
+        if (buf.length) {
+          result += syllableMode ? buf.join('|') : buf.join('');
+          buf = [];
         }
         result += ch;
       }
     }
-    if (soundBuffer.length) {
-      result += syllableMode ? soundBuffer.join('|') : soundBuffer.join('');
-    }
+    if (buf.length) result += syllableMode ? buf.join('|') : buf.join('');
     return result;
   }
 
   function decodeSegment(seg) {
-    const lower = seg.toLowerCase();
-    let result  = '';
-    let i       = 0;
-    while (i < lower.length) {
-      let matched = false;
+    const lo = seg.toLowerCase();
+    let result = '', i = 0;
+    while (i < lo.length) {
+      let hit = false;
       for (const { letter, sound } of REVERSE) {
-        if (lower.startsWith(sound, i)) {
-          const isUpper = /[A-Z]/.test(seg[i]);
-          result += isUpper ? letter.toUpperCase() : letter;
+        if (lo.startsWith(sound, i)) {
+          const up = /[A-Z]/.test(seg[i]);
+          result += up ? letter.toUpperCase() : letter;
           i += sound.length;
-          matched = true;
+          hit = true;
           break;
         }
       }
-      if (!matched) { result += seg[i]; i++; }
+      if (!hit) { result += seg[i]; i++; }
     }
     return result;
   }
 
   function toEnglish(text) {
-    // Strip syllable separators then decode alpha runs
     return text.replace(/\|/g, '').replace(/[a-zA-Z]+/g, seg => decodeSegment(seg));
   }
 
-  /* ========================================================
-     INPUT HANDLER
-  ======================================================== */
+  /* ============================================================
+     INPUT / OUTPUT
+  ============================================================ */
   function onInput() {
     const raw    = document.getElementById('input-text').value;
-    const result = direction === 'toThingy' ? toThingy(raw) : toEnglish(raw);
+    const result = direction === 'toZorpican' ? toZorpican(raw) : toEnglish(raw);
     document.getElementById('input-char-count').textContent = raw.length + ' chars';
     setOutput(result);
   }
@@ -689,63 +669,63 @@ body.mode-phone .copy-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
     }
   }
 
-  /* ========================================================
+  /* ============================================================
      SWITCH DIRECTION
-  ======================================================== */
+  ============================================================ */
   function switchDirection() {
-    direction = direction === 'toThingy' ? 'toEnglish' : 'toThingy';
-    const fwd = direction === 'toThingy';
+    direction = direction === 'toZorpican' ? 'toEnglish' : 'toZorpican';
+    const fwd = direction === 'toZorpican';
 
-    document.getElementById('from-label').textContent         = fwd ? 'English' : 'Thingy';
-    document.getElementById('to-label').textContent           = fwd ? 'Thingy'  : 'English';
-    document.getElementById('input-panel-label').textContent  = fwd ? 'English' : 'Thingy';
-    document.getElementById('output-panel-label').textContent = fwd ? 'Thingy'  : 'English';
+    document.getElementById('from-label').textContent         = fwd ? 'English'  : 'Zorpican';
+    document.getElementById('to-label').textContent           = fwd ? 'Zorpican' : 'English';
+    document.getElementById('input-panel-label').textContent  = fwd ? 'English'  : 'Zorpican';
+    document.getElementById('output-panel-label').textContent = fwd ? 'Zorpican' : 'English';
     document.getElementById('input-text').placeholder         = fwd
       ? 'Type in English…'
-      : 'Paste Thingy text… (| separators are fine)';
+      : 'Paste Zorpican text… (| separators OK)';
 
-    // Syllable toggle only makes sense in English → Thingy
+    // Syllable toggle only applies when outputting Zorpican
     document.getElementById('syllable-wrap').classList.toggle('hidden', !fwd);
 
     onInput();
   }
 
-  /* ========================================================
+  /* ============================================================
      SYLLABLE TOGGLE
-  ======================================================== */
+  ============================================================ */
   function toggleSyllables() {
     syllableMode = !syllableMode;
     document.getElementById('syllable-toggle').classList.toggle('on', syllableMode);
     onInput();
   }
 
-  /* ========================================================
+  /* ============================================================
      COPY
-  ======================================================== */
+  ============================================================ */
   function copyOutput() {
     const el   = document.getElementById('output-area');
-    const text = el.classList.contains('empty') ? '' : el.textContent;
-    if (!text) return;
+    if (el.classList.contains('empty')) return;
+    const text = el.textContent;
 
-    navigator.clipboard.writeText(text).then(() => {
+    const done = () => {
       const btn = document.getElementById('copy-btn');
       btn.textContent = '✓ Copied!';
       btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'Copy';
-        btn.classList.remove('copied');
-      }, 2200);
-    }).catch(() => {
-      // Fallback
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity  = '0';
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+    };
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(done);
+    } else {
+      const ta = Object.assign(document.createElement('textarea'), {
+        value: text, style: 'position:fixed;opacity:0'
+      });
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-    });
+      done();
+    }
   }
 </script>
 

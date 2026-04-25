@@ -3,214 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throwback Translator</title>
+    <title>Thingy Translator Pro</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Selection Screen */
-        #selectionScreen {
-            text-align: center;
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-        }
-        .device-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px;
-            transition: background-color 0.3s;
-            width: 150px;
-        }
-        .device-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* App Container */
-        #translatorApp {
-            display: none;
-            background-color: #1e1e1e;
-            padding: 30px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-        }
-
-        /* Layouts */
-        body.mode-pc #translatorApp { width: 800px; border-radius: 12px; display: flex; flex-direction: column; }
-        body.mode-phone #translatorApp { width: 100%; height: 100vh; border-radius: 0; display: flex; flex-direction: column; justify-content: center; padding: 20px; box-sizing: border-box; }
-        
-        textarea {
-            width: 100%;
-            height: 120px;
-            background-color: #2c2c2c;
-            color: #fff;
-            border: 1px solid #4CAF50;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            resize: none;
-            box-sizing: border-box;
-        }
-
-        h1 { text-align: center; color: #4CAF50; margin-top: 0; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #81C784; }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .switch-btn { background-color: #333; color: #4CAF50; border: 1px solid #4CAF50; }
-        .switch-btn:hover { background-color: #444; }
-        .copy-btn { background-color: #4CAF50; color: white; }
-        .copy-btn:hover { background-color: #45a049; }
-
-        .status { color: #81C784; font-size: 14px; opacity: 0; text-align: center; margin-top: 5px; transition: opacity 0.3s; }
+        body { font-family: 'Courier New', Courier, monospace; background-color: #121212; color: #4CAF50; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #selectionScreen { text-align: center; background: #1e1e1e; padding: 40px; border-radius: 15px; border: 2px solid #4CAF50; }
+        .device-btn { background: #4CAF50; color: #121212; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; cursor: pointer; margin: 10px; font-weight: bold; }
+        #app { display: none; background: #1e1e1e; padding: 25px; border-radius: 15px; border: 2px solid #4CAF50; transition: width 0.3s; }
+        body.mode-pc #app { width: 700px; }
+        body.mode-phone #app { width: 95%; height: 95vh; display: flex; flex-direction: column; justify-content: space-around; }
+        textarea { width: 100%; height: 120px; background: #262626; color: #fff; border: 1px solid #4CAF50; border-radius: 8px; padding: 12px; font-size: 16px; margin: 10px 0; resize: none; box-sizing: border-box; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        .btn-switch { background: #333; color: #4CAF50; border: 1px solid #4CAF50; }
+        .btn-copy { background: #4CAF50; color: #121212; }
+        .syllable-toggle { grid-column: span 2; background: #1a3a1a; color: #81C784; border: 1px dashed #4CAF50; }
+        h1 { text-align: center; margin: 0 0 10px 0; font-size: 20px; }
+        label { font-size: 12px; opacity: 0.8; }
+        .status { text-align: center; height: 20px; font-size: 12px; color: #81C784; }
     </style>
 </head>
 <body>
 
 <div id="selectionScreen">
-    <h1 style="color: white; margin-bottom: 30px;">Select Your Device</h1>
-    <button class="device-btn" onclick="startApp('phone')">📱 Phone</button>
-    <button class="device-btn" onclick="startApp('pc')">💻 PC</button>
+    <h1>CHOOSE YOUR TERMINAL</h1>
+    <button class="device-btn" onclick="start('phone')">MOBILE</button>
+    <button class="device-btn" onclick="start('pc')">DESKTOP</button>
 </div>
 
-<div id="translatorApp">
-    <h1 id="appTitle">English ➔ Thingy</h1>
+<div id="app">
+    <h1 id="title">ENGLISH ➔ THINGY</h1>
     
-    <label id="inputLabel">English Input:</label>
-    <textarea id="inputText" placeholder="Type here..." oninput="processText()"></textarea>
+    <label id="labelIn">INPUT:</label>
+    <textarea id="input" placeholder="Type here..." oninput="run()"></textarea>
 
     <div class="controls">
-        <button class="btn switch-btn" onclick="toggleMode()">🔄 Switch Direction</button>
-        <button class="btn copy-btn" onclick="copyResult()">Copy Result</button>
+        <button class="btn btn-switch" onclick="swap()">🔄 SWAP DIRECTION</button>
+        <button class="btn btn-copy" onclick="copy()">📋 COPY RESULT</button>
+        <button class="btn syllable-toggle" id="syllableBtn" onclick="toggleSyllables()">SYLLABLE MODE: OFF</button>
     </div>
 
-    <label id="outputLabel">Thingy Output:</label>
-    <textarea id="outputText" placeholder="Result will appear here..." readonly></textarea>
-    <div class="status" id="copyStatus">Copied to clipboard!</div>
+    <label id="labelOut">OUTPUT:</label>
+    <textarea id="output" readonly></textarea>
+    <div class="status" id="status"></div>
 </div>
 
 <script>
-    let isEnglishToThingy = true;
+    let isEnToTh = true;
+    let syllableMode = false;
+    const cipher = {'a':'zep','b':'zorp','c':'zeep','d':'zorpg','e':'zang','f':'zeepy','g':'zkeep','h':'hoip','i':'zepy','j':'kepy','k':'korp','l':'zorg','m':'morkg','n':'mork','o':'oopz','p':'pork','q':'lorp','r':'lulz','s':'szeep','t':'kalz','u':'zeeps','v':'zleep','w':'xeek','x':'kex','y':'zog','z':'wat'};
+    const revCipher = Object.fromEntries(Object.entries(cipher).map(([k, v]) => [v, k]));
+    const sortedKeys = Object.keys(revCipher).sort((a,b) => b.length - a.length);
 
-    const cipher = {
-        'a': 'zep', 'b': 'zorp', 'c': 'zeep', 'd': 'zorpg', 'e': 'zang',
-        'f': 'zeepy', 'g': 'zkeep', 'h': 'hoip', 'i': 'zepy', 'j': 'kepy',
-        'k': 'korp', 'l': 'zorg', 'm': 'morkg', 'n': 'mork', 'o': 'oopz',
-        'p': 'pork', 'q': 'lorp', 'r': 'lulz', 's': 'szeep', 't': 'kalz',
-        'u': 'zeeps', 'v': 'zleep', 'w': 'xeek', 'x': 'kex', 'y': 'zog', 'z': 'wat'
-    };
-
-    // Create a reverse cipher for decoding
-    const reverseCipher = Object.fromEntries(Object.entries(cipher).map(([k, v]) => [v, k]));
-    // Sort keys by length descending to ensure longest matches are caught first (e.g., 'zeeps' before 'zep')
-    const sortedCipherKeys = Object.keys(reverseCipher).sort((a, b) => b.length - a.length);
-
-    function startApp(deviceType) {
+    function start(mode) {
         document.getElementById('selectionScreen').style.display = 'none';
-        document.body.classList.add(deviceType === 'phone' ? 'mode-phone' : 'mode-pc');
-        document.getElementById('translatorApp').style.display = 'flex';
+        document.body.className = 'mode-' + mode;
+        document.getElementById('app').style.display = 'block';
     }
 
-    function toggleMode() {
-        isEnglishToThingy = !isEnglishToThingy;
-        document.getElementById('appTitle').innerText = isEnglishToThingy ? "English ➔ Thingy" : "Thingy ➔ English";
-        document.getElementById('inputLabel').innerText = isEnglishToThingy ? "English Input:" : "Thingy Input:";
-        document.getElementById('outputLabel').innerText = isEnglishToThingy ? "Thingy Output:" : "English Output:";
-        
-        // Swap content of boxes
-        const inputVal = document.getElementById('inputText').value;
-        const outputVal = document.getElementById('outputText').value;
-        document.getElementById('inputText').value = outputVal;
-        processText();
+    function toggleSyllables() {
+        syllableMode = !syllableMode;
+        document.getElementById('syllableBtn').innerText = "SYLLABLE MODE: " + (syllableMode ? "ON" : "OFF");
+        run();
     }
 
-    function processText() {
-        const input = document.getElementById('inputText').value;
-        if (isEnglishToThingy) {
-            translateToThingy(input);
-        } else {
-            translateToEnglish(input);
-        }
+    function swap() {
+        isEnToTh = !isEnToTh;
+        document.getElementById('title').innerText = isEnToTh ? "ENGLISH ➔ THINGY" : "THINGY ➔ ENGLISH";
+        document.getElementById('input').value = document.getElementById('output').value.replace(/\|/g, '');
+        run();
     }
 
-    function translateToThingy(text) {
-        let output = '';
+    function run() {
+        const val = document.getElementById('input').value;
+        document.getElementById('output').value = isEnToTh ? toTh(val) : toEn(val);
+    }
+
+    function toTh(text) {
+        let res = [];
         for (let char of text) {
-            let lowerChar = char.toLowerCase();
-            if (cipher[lowerChar]) {
-                let chunk = cipher[lowerChar];
-                output += (char === char.toUpperCase()) ? chunk.charAt(0).toUpperCase() + chunk.slice(1) : chunk;
+            let low = char.toLowerCase();
+            if (cipher[low]) {
+                let chunk = (char === char.toUpperCase()) ? cipher[low][0].toUpperCase() + cipher[low].slice(1) : cipher[low];
+                res.push(chunk);
             } else {
-                output += char;
+                res.push(char);
             }
         }
-        document.getElementById('outputText').value = output;
+        return res.join(syllableMode ? '|' : '');
     }
 
-    function translateToEnglish(text) {
-        let output = '';
+    function toEn(text) {
+        let clean = text.replace(/\|/g, '');
+        let res = '';
         let i = 0;
-        while (i < text.length) {
-            let found = false;
-            // Peek ahead to see if the next string matches a cipher word
-            for (let code of sortedCipherKeys) {
-                if (text.toLowerCase().substring(i, i + code.length) === code) {
-                    let letter = reverseCipher[code];
-                    // Check original casing of the first letter of the chunk
-                    output += (text[i] === text[i].toUpperCase()) ? letter.toUpperCase() : letter;
-                    i += code.length;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                output += text[i];
+        while (i < clean.length) {
+            let match = sortedKeys.find(k => clean.toLowerCase().substring(i, i + k.length) === k);
+            if (match) {
+                let L = revCipher[match];
+                res += (clean[i] === clean[i].toUpperCase()) ? L.toUpperCase() : L;
+                i += match.length;
+            } else {
+                res += clean[i];
                 i++;
             }
         }
-        document.getElementById('outputText').value = output;
+        return res;
     }
 
-    function copyResult() {
-        const copyText = document.getElementById("outputText");
-        copyText.select();
-        navigator.clipboard.writeText(copyText.value);
-        const status = document.getElementById("copyStatus");
-        status.style.opacity = 1;
-        setTimeout(() => { status.style.opacity = 0; }, 2000);
+    function copy() {
+        navigator.clipboard.writeText(document.getElementById('output').value);
+        document.getElementById('status').innerText = "COPIED TO CLIPBOARD";
+        setTimeout(() => document.getElementById('status').innerText = "", 2000);
     }
 </script>
-
 </body>
 </html>
